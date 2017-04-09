@@ -77,11 +77,15 @@ export default {
 }
 .page-sidebar {
   width: 200px;
+  overflow: auto;
   >ul {
     height: 100%;
   }
 }
 .page-main {
   flex: 1;
+  padding: 20px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 </style>
