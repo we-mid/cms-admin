@@ -1,14 +1,16 @@
 <template>
   <div>
 
-    <el-breadcrumb separator="/">
+    <el-breadcrumb separator="/" class="breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">商品列表</el-breadcrumb-item>
       <el-breadcrumb-item>商品1007</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <h1>Products</h1>
-
-
+    <el-card>
+      <div class="card-title" slot="header">
+        <i class="el-icon-arrow-right"></i>
+        <span>商品列表</span>
+      </div>
 
       <el-table
         :data="tableData5"
@@ -37,6 +39,10 @@
               <el-form-item label="商品描述">
                 <span>{{ props.row.desc }}</span>
               </el-form-item>
+              <el-form-item label="操作">
+                <el-button type="default" size="mini" icon="edit"></el-button>
+                <el-button type="danger" size="mini" icon="delete"></el-button>
+              </el-form-item>
             </el-form>
           </template>
         </el-table-column>
@@ -54,18 +60,27 @@
         </el-table-column>
       </el-table>
 
-      <!--<el-pagination
+    <div class="table-footer">
+      <el-button type="primary" size="small" icon="plus">新增商品</el-button>
+      <el-pagination
+        class="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
+        :current-page="currentPage"
         :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
         :total="400">
-      </el-pagination>-->
+      </el-pagination>
+    </div>
 
+    </el-card>
 
     <el-card class="box-card">
+      <div class="card-title" slot="header">
+        <i class="el-icon-edit"></i>
+        <span>编辑商品 1007</span>
+      </div>
       <el-form ref="form" :model="form" label-width="80px" class="demo-form">
         <el-form-item label="活动名称">
           <el-input v-model="form.name"></el-input>
@@ -120,6 +135,7 @@
 export default {
   data () {
     return {
+      currentPage: 1,
       form: {
         name: '',
         region: '',
@@ -164,11 +180,20 @@ export default {
         shopId: '10333'
       }]
     }
+  },
+
+  methods: {
+    handleSizeChange () {},
+    handleCurrentChange () {}
   }
 }
 </script>
 
 <style lang="scss">
+.breadcrumb {
+  margin-bottom: 20px;
+}
+
 .demo-table-expand {
   /* display: inline-block extra margin [duplicate]
   http://stackoverflow.com/questions/1833734/display-inline-block-extra-margin */
@@ -193,10 +218,30 @@ export default {
 
 .box-card {
   margin-top: 20px;
+  width: 500px;
+}
+.card-title {
+  i {
+    margin-right: 0.2em;
+  }
 }
 
 .el-checkbox, .el-radio {
   margin-right: 15px;
+  margin-left: 0 !important;
+}
+
+.table-footer {
+  margin-top: 16px;
+  display: flex;
+  display-direction: row;
+  align-items: center;
+}
+.pagination {
+  display: inline-block;
+}
+
+.el-button+.el-button {
   margin-left: 0 !important;
 }
 </style>
