@@ -1,8 +1,7 @@
 {
-  "name": "",
+  "name": "we-admin-ui",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "UI part for we-admin framework.",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
