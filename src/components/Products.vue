@@ -8,47 +8,42 @@
 
     <el-card>
       <div class="card-title" slot="header">
-        <i class="el-icon-arrow-right"></i>
+        <i class="el-icon-arrow-down"></i>
         <span>商品列表</span>
       </div>
 
       <el-table
-        :data="tableData5"
+        :data="itemList"
         style="width: 100%">
         <el-table-column type="expand">
           <template scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="商品ID">
+                <span>{{ props.row.uid }}</span>
+              </el-form-item>
               <el-form-item label="商品名称">
                 <span>{{ props.row.name }}</span>
-              </el-form-item>
-              <el-form-item label="所属店铺">
-                <span>{{ props.row.shop }}</span>
-              </el-form-item>
-              <el-form-item label="商品 ID">
-                <span>{{ props.row.id }}</span>
-              </el-form-item>
-              <el-form-item label="店铺 ID">
-                <span>{{ props.row.shopId }}</span>
               </el-form-item>
               <el-form-item label="商品分类">
                 <span>{{ props.row.category }}</span>
               </el-form-item>
-              <el-form-item label="店铺地址">
-                <span>{{ props.row.address }}</span>
+              <el-form-item label="供应商">
+                <span>{{ props.row.provider }}</span>
               </el-form-item>
               <el-form-item label="商品描述">
-                <span>{{ props.row.desc }}</span>
+                <span>{{ props.row.description }}</span>
               </el-form-item>
               <el-form-item label="操作">
                 <el-button type="default" size="mini" icon="edit"></el-button>
-                <el-button type="danger" size="mini" icon="delete"></el-button>
+                <el-button type="danger" size="mini" icon="delete"
+                    @click="deleteItem(props.row.uid)"></el-button>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
         <el-table-column
-          label="商品 ID"
-          prop="id">
+          label="商品ID"
+          prop="uid">
         </el-table-column>
         <el-table-column
           label="商品名称"
@@ -56,24 +51,23 @@
         </el-table-column>
         <el-table-column
           label="描述"
-          prop="desc">
+          prop="description">
         </el-table-column>
       </el-table>
 
-    <div class="table-footer">
-      <el-button type="primary" size="small" icon="plus">新增商品</el-button>
-      <el-pagination
-        class="pagination"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
-      </el-pagination>
-    </div>
-
+      <div class="table-footer">
+        <el-button type="primary" size="small" icon="plus">新增商品</el-button>
+        <el-pagination
+          class="pagination"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[100, 200, 300, 400]"
+          :page-size="100"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="400">
+        </el-pagination>
+      </div>
     </el-card>
 
     <el-card class="box-card">
@@ -125,16 +119,53 @@
           <el-button>取消</el-button>
         </el-form-item>
       </el-form>
+    </el-card>
 
+
+    <el-card class="box-card">
+      <div class="card-title" slot="header">
+        <i class="el-icon-edit"></i>
+        <span>添加商品</span>
+      </div>
+      <el-form ref="form" :model="form" label-width="80px" class="demo-form">
+        <el-form-item label="商品名称">
+          <el-input v-model="newItem.name"></el-input>
+        </el-form-item>
+        <el-form-item label="商品描述">
+          <el-input type="textarea" v-model="newItem.description"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="formSubmit">立即添加</el-button>
+        </el-form-item>
+      </el-form>
     </el-card>
 
   </div>
 </template>
 
 <script>
+import fetch from 'isomorphic-fetch'
+import _ from 'lodash'
+
+// fetch('http://localhost:3001/api/products/list')
+//   .then(res => res.json())
+//   .then(data => {
+//     console.log('data', data)
+//   })
+
+let itemTemplate = {
+  name: '',
+  description: ''
+}
+
 export default {
   data () {
     return {
+      listCardOpen: true,
+      listTotal: 0,
+      itemList: [],
+      newItem: _.clone(itemTemplate),
+
       currentPage: 1,
       form: {
         name: '',
@@ -145,44 +176,58 @@ export default {
         type: [],
         resource: '',
         desc: ''
-      },
-      tableData5: [{
-        id: '12987122',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987123',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987125',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }, {
-        id: '12987126',
-        name: '好滋好味鸡蛋仔',
-        category: '江浙小吃、小吃零食',
-        desc: '荷兰优质淡奶，奶香浓而不腻',
-        address: '上海市普陀区真北路',
-        shop: '王小虎夫妻店',
-        shopId: '10333'
-      }]
+      }
     }
   },
 
+  created () {
+    this.loadList()
+  },
+
   methods: {
+    loadList () {
+      fetch('http://localhost:3001/api/products/list?sort=-1')
+        .then(res => res.json())
+        .then(data => {
+          let { total, docs } = data
+          this.itemList = docs
+          this.listTotal = total
+        })
+        .catch(err => {
+          console.error('err', err)
+          alert(err)
+        })
+    },
+
+    deleteItem (uid) {
+      fetch('http://localhost:3001/api/products/delete', {
+        method: 'POST',
+        body: JSON.stringify({ uid })
+      })
+      .then(data => {
+        this.loadList()
+      })
+      .catch(err => {
+        console.error('err', err)
+        alert(err)
+      })
+    },
+
+    formSubmit () {
+      fetch('http://localhost:3001/api/products/create', {
+        method: 'POST',
+        body: JSON.stringify(this.newItem)
+      })
+      .then(() => {
+        this.newItem = _.clone(itemTemplate)
+        this.loadList()
+      })
+      .catch(err => {
+        console.error('err', err)
+        alert(err)
+      })
+    },
+
     handleSizeChange () {},
     handleCurrentChange () {}
   }
@@ -204,6 +249,11 @@ export default {
   margin-bottom: 0;
   width: 50%;
 }
+
+.demo-table-expand .el-form-item__content {
+  padding-right: 10px;
+}
+
 .demo-table-expand label {
   width: 90px;
   color: #99a9bf;
@@ -222,7 +272,7 @@ export default {
 }
 .card-title {
   i {
-    margin-right: 0.2em;
+    margin-right: 0.3em;
   }
 }
 
