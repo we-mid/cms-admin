@@ -1,7 +1,8 @@
 <template>
   <div class="page-login">
     <div class="page-topbar">
-      <el-menu theme="dark" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu theme="dark" :default-active="activeTab" class="el-menu-demo" mode="horizontal"
+          @select="handleTopNavSelect">
         <el-menu-item index="1">处理中心</el-menu-item>
         <el-submenu index="2">
           <template slot="title">我的工作台</template>
@@ -15,7 +16,8 @@
 
     <div class="page-body">
       <div class="page-sidebar">
-        <el-menu default-active="2" class="el-menu-vertical-demo">
+        <el-menu :default-active="activeTab" class="el-menu-vertical-demo"
+            @select="handleSideNavSelect">
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-message"></i>导航一</template>
             <el-menu-item-group>
@@ -24,7 +26,7 @@
               <el-menu-item index="1-2">选项2</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
+              <el-menu-item index="/products">商品管理</el-menu-item>
             </el-menu-item-group>
             <el-submenu index="1-4">
               <template slot="title">选项4</template>
@@ -47,14 +49,17 @@
 export default {
   data () {
     return {
-      activeIndex: '1',
-      activeIndex2: '1'
+      activeTab: this.$route.path
     }
   },
 
   methods: {
-    handleSelect (key, keyPath) {
-      console.log(key, keyPath)
+    handleTopNavSelect (key, keyPath) {
+      console.log('handleTopNavSelect', key, keyPath)
+    },
+    handleSideNavSelect (key, keyPath) {
+      console.log('handleSideNavSelect', key, keyPath)
+      this.$router.push(key)
     }
   }
 }

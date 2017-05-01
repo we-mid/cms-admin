@@ -2,6 +2,8 @@
 var path = require('path')
 
 module.exports = {
+  apiUrl: 'http://localhost:3001/api',
+
   build: {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../dist/index.html'),
