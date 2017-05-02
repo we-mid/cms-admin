@@ -26,10 +26,10 @@
                   <span>{{ props.row.name }}</span>
                 </el-form-item>
                 <el-form-item label="供应商">
-                  <span>{{ props.row.provider }}</span>
+                  <span>{{ getRefValue(props.row, 'provider', 'name') }}</span>
                 </el-form-item>
                 <el-form-item label="商品分类">
-                  <span>{{ props.row.category }}</span>
+                  <span>{{ getRefValue(props.row, 'category', 'name') }}</span>
                 </el-form-item>
                 <el-form-item label="商品描述">
                   <span>{{ props.row.description }}</span>
@@ -66,7 +66,7 @@
             @current-change="handlePageCurrent"
             :current-page="pageCurrent"
             :page-size="pageSize"
-            :page-sizes="[10, 20, 50]"
+            :page-sizes="pageSizes"
             layout="total, sizes, prev, pager, next, jumper"
             :total="listTotal">
           </el-pagination>
@@ -119,10 +119,12 @@ export default {
       itemList: [],
       newItem: _.clone(itemTemplate),
       pageCurrent: 1,
+      pageSizes: [10, 20, 50],
       pageSize: 10,
 
       itemInEdit: false,
 
+      // todo: request /produts, /categories, /providers seperately
       formSchema: {
         fields: [
           { input: 'text', key: 'name', label: '商品名称' },
@@ -148,19 +150,14 @@ export default {
           },
           { input: 'textarea', key: 'description', label: '商品描述' }
         ]
-      },
-
-      currentPage: 1,
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
       }
+    }
+  },
+
+  async asyncData () {
+    console.log('async data')
+    return {
+
     }
   },
 
@@ -169,6 +166,21 @@ export default {
   },
 
   methods: {
+    getRefValue (srcObj, fromKey, toKey) {
+      let uid = srcObj[fromKey]
+      let refObj = this.refMap[fromKey][uid]
+      return refObj ? refObj[toKey] : null
+    },
+    toRefMap (refs) {
+      return _.reduce(refs, (acc, docs, k) => {
+        acc[k] = docs.reduce((ac, doc) => {
+          ac[doc.uid] = doc
+          return ac
+        }, {})
+        return acc
+      }, {})
+    },
+
     loadList () {
       this.listLoading = true
       let { pageSize, pageCurrent } = this
@@ -178,7 +190,8 @@ export default {
       ].join('')
       fetchApi(url)
         .then(data => {
-          let { total, docs } = data
+          let { total, docs, refs } = data
+          this.refMap = this.toRefMap(refs)
           this.itemList = docs
           this.listTotal = total
           this.listLoading = false

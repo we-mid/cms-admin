@@ -37,7 +37,12 @@ import _ from 'lodash'
 export default {
   props: {
     action: String,
-    schema: Object
+    schema: {
+      // `schema` is required in `data` method
+      // so it has to be specified before rendering an `ItemForm`
+      required: true,
+      type: Object
+    }
   },
 
   data () {
