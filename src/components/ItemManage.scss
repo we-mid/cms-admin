@@ -1,0 +1,37 @@
+.breadcrumb {
+  margin-bottom: 20px;
+}
+
+.demo-table-expand {
+  /* display: inline-block extra margin [duplicate]
+  http://stackoverflow.com/questions/1833734/display-inline-block-extra-margin */
+  font-size: 0;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0 !important;
+  margin-bottom: 0;
+  width: 50%;
+}
+
+.demo-table-expand .el-form-item__content {
+  padding-right: 10px;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand {
+  .el-button+.el-button {
+    margin-left: 0 !important;
+  }
+}
+
+.table-footer {
+  margin-top: 16px;
+  display: flex;
+  display-direction: row;
+  align-items: center;
+}
+.pagination {
+  display: inline-block;
+}

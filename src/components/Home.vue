@@ -1,24 +1,17 @@
 <template>
   <div class="page-login">
     <div class="page-topbar">
-      <el-menu theme="dark" :default-active="activeTab" class="el-menu-demo" mode="horizontal"
-          @select="handleTopNavSelect">
-        <el-menu-item index="1">处理中心</el-menu-item>
-        <el-submenu index="2">
-          <template slot="title">我的工作台</template>
-          <el-menu-item index="2-1">选项1</el-menu-item>
-          <el-menu-item index="2-2">选项2</el-menu-item>
-          <el-menu-item index="2-3">选项3</el-menu-item>
-        </el-submenu>
-        <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
-      </el-menu>
+      <h1>点餐管理后台</h1>
+      <ul>
+        <li @click="logout()">退出登录</li>
+      </ul>
     </div>
 
     <div class="page-body">
       <div class="page-sidebar">
         <el-menu :default-active="activeTab" class="el-menu-vertical-demo"
             @select="handleSideNavSelect">
-          <el-submenu index="1">
+          <!--<el-submenu index="1">
             <template slot="title"><i class="el-icon-message"></i>导航一</template>
             <el-menu-item-group>
               <template slot="title">分组一</template>
@@ -32,9 +25,10 @@
               <template slot="title">选项4</template>
               <el-menu-item index="1-4-1">选项1</el-menu-item>
             </el-submenu>
-          </el-submenu>
-          <el-menu-item index="2"><i class="el-icon-menu"></i>导航二</el-menu-item>
-          <el-menu-item index="3"><i class="el-icon-setting"></i>导航三</el-menu-item>
+          </el-submenu>-->
+          <el-menu-item index="products"><i class="el-icon-menu"></i>商品管理</el-menu-item>
+          <el-menu-item index="orders"><i class="el-icon-document"></i>订单管理</el-menu-item>
+          <el-menu-item index="exchanges"><i class="el-icon-date"></i>交易管理</el-menu-item>
         </el-menu>
       </div>
 
@@ -48,15 +42,17 @@
 <script>
 export default {
   data () {
+    let activeTab = this.$route.path.substr(1) // remove leading `/`
     return {
-      activeTab: this.$route.path
+      activeTab
     }
   },
 
   methods: {
-    handleTopNavSelect (key, keyPath) {
-      console.log('handleTopNavSelect', key, keyPath)
+    logout () {
+      // todo
     },
+
     handleSideNavSelect (key, keyPath) {
       console.log('handleSideNavSelect', key, keyPath)
       this.$router.push(key)
@@ -71,9 +67,6 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-.page-topbar {
-
 }
 .page-body {
   flex: 1;
@@ -93,4 +86,46 @@ export default {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
+
+.page-topbar {
+  // background-color: #44a8f2;
+  // color: white;
+  background-color: rgb(50, 65, 87);
+  color: rgb(191, 203, 217);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  h1 {
+    font-size: 20px;
+    font-weight: normal;
+    margin-left: 20px;
+  }
+  ul {
+    flex: 1;
+  }
+  li {
+    display: inline-block;
+    cursor: pointer;
+    float: right;
+    margin-right: 20px;
+    font-size: 14px;
+  }
+}
+.pull-right {
+  float: right !important;
+}
+</style>
+
+<style lang="less">
+  [class^="el-icon-fa"], [class*=" el-icon-fa"] {
+    font-family:"FontAwesome" !important;
+    display: inline-block;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @import url("../../node_modules/font-awesome/less/font-awesome");
+  @fa-css-prefix: el-icon-fa;
+  @import url("../../node_modules/element-ui/lib/theme-default/index.css");
 </style>

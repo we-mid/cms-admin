@@ -26,11 +26,11 @@
                 <el-form-item label="供应商">
                   <span>{{ getRefValue(props.row, 'provider', 'providers', 'name') }}</span>
                 </el-form-item>
-                <el-form-item label="时段">
+                <el-form-item label="时段分类">
                   <span>{{ getRefValue(props.row, 'category', 'categories', 'name') }}</span>
                 </el-form-item>
-                <el-form-item label="价格">
-                  <span>{{ props.row.price }} 元</span>
+                <el-form-item label="价格分类">
+                  <span>{{ getRefValue(props.row, 'priceCategory', 'categories', 'name') }}</span>
                 </el-form-item>
                 <el-form-item :label="rtype + '描述'" style="width: 100%">
                   <span>{{ props.row.description }}</span>
@@ -66,7 +66,7 @@
           <el-table-column
               label="价格">
             <template scope="s">
-              {{ s.row.price }} 元
+              {{ getRefValue(s.row, 'priceCategory', 'categories', 'name') }}
             </template>
           </el-table-column>
         </el-table>
@@ -117,7 +117,7 @@ let refDocs = {
   providers
 }
 
-let rtype = '商品'
+let rtype = '订单'
 
 export default {
   components: { ItemForm },
@@ -160,9 +160,14 @@ export default {
             ]
           },
           {
-            input: 'number',
-            key: 'price',
-            label: '价格'
+            input: 'radio-group',
+            key: 'priceCategory',
+            label: '价格',
+            options: [
+              { value: '20y', label: '20元套餐' },
+              { value: '25y', label: '25元套餐' },
+              { value: '30y', label: '30元套餐' }
+            ]
           },
           { input: 'textarea', key: 'description', label: `${rtype}描述` }
         ]
