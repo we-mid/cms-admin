@@ -30,6 +30,17 @@
             </el-radio>
           </el-radio-group>
         </template>
+
+        <template v-else-if="field.input === 'image-upload'">
+          <el-upload class="image-upload"
+              accept="image/*"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-success="imageUploadSuccess"
+              :before-upload="imageBeforeUpload"
+              list-type="picture-card">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </template>
       </el-form-item>
 
       <el-form-item>
@@ -94,6 +105,24 @@ export default {
   },
 
   methods: {
+    imageBeforeUpload (file) {
+      let isJPG = file.type === 'image/jpeg'
+      let isPNG = file.type === 'image/png'
+      let isLt500K = file.size / 1024 / 1024 <= 0.5
+      let ret = (isJPG || isPNG) && isLt500K
+      if (!ret) {
+        this.$notify({
+          type: 'warning',
+          title: '图片上传失败',
+          message: '图片格式需为JPG/PNG，且不大于500K'
+        })
+      }
+      return ret
+    },
+    imageUploadSuccess (res, file) {
+      console.log('res, file', res, file)
+    },
+
     schemaToModel () {
       return this.schema.fields
         .reduce((acc, field) => {
@@ -118,6 +147,21 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+$w: 100px;
+.image-upload {
+  .el-upload {
+    width: $w;
+    height: $w;
+    line-height: $w + 8px;
+  }
+  .el-upload-list__item {
+    width: $w !important;
+    height: $w !important;
+  }
+}
+</style>
 
 <style scoped>
 .box-card {

@@ -2,6 +2,11 @@
   margin-bottom: 20px;
 }
 
+.search-input {
+  width: 200px !important;
+  margin-bottom: 16px;
+}
+
 .demo-table-expand {
   /* display: inline-block extra margin [duplicate]
   http://stackoverflow.com/questions/1833734/display-inline-block-extra-margin */
@@ -22,7 +27,7 @@
 }
 .demo-table-expand {
   .el-button+.el-button {
-    margin-left: 0 !important;
+    margin-left: 2px !important;
   }
 }
 

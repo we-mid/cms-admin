@@ -11,36 +11,42 @@
       </div>
 
       <div>
+        <!--<el-input class="search-input"
+          placeholder="关键词搜索"
+          icon="search"
+          v-model="searchInput">
+        </el-input>-->
+
         <el-table :data="itemList">
           <el-table-column type="expand">
-            <template scope="props">
+            <template scope="s">
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item :label="rtype + 'UID'">
-                  <span>{{ props.row.uid }}</span>
+                  <span>{{ s.row.uid }}</span>
                 </el-form-item>
                 <el-form-item :label="rtype + '名称'">
-                  <span>{{ props.row.name }}</span>
+                  <span>{{ s.row.name }}</span>
                 </el-form-item>
                 <el-form-item label="供应商">
-                  <span>{{ getRefValue(props.row, 'provider', 'providers', 'name') }}</span>
+                  <span>{{ getRefValue(s.row, 'provider', 'providers', 'name') }}</span>
                 </el-form-item>
                 <el-form-item label="时段">
-                  <span>{{ getRefValue(props.row, 'category', 'categories', 'name') }}</span>
+                  <span>{{ getRefValue(s.row, 'category', 'categories', 'name') }}</span>
                 </el-form-item>
                 <el-form-item label="价格">
-                  <span>{{ props.row.price }} 元</span>
+                  <span>{{ s.row.price }} 元</span>
                 </el-form-item>
                 <el-form-item :label="rtype + '描述'">
-                  <span>{{ props.row.description }}</span>
+                  <span>{{ s.row.description }}</span>
                 </el-form-item>
                 <el-form-item label="创建日期">
-                  <span>{{ new Date(props.row.createdAt).toLocaleString() }}</span>
+                  <span>{{ new Date(s.row.createdAt).toLocaleString() }}</span>
                 </el-form-item>
                 <el-form-item label="操作">
                   <el-button type="default" size="mini" icon="edit"
-                      @click="editItem(props.row)"></el-button>
+                      @click="editItem(s.row)"></el-button>
                   <el-button type="danger" size="mini" icon="delete"
-                      @click="deleteItem(props.row)"></el-button>
+                      @click="deleteItem(s.row)"></el-button>
                 </el-form-item>
               </el-form>
             </template>
@@ -115,6 +121,7 @@ export default {
   data () {
     return {
       rtype,
+      searchInput: '',
       listLoading: false,
       listTotal: 0,
       itemList: [],
@@ -122,6 +129,7 @@ export default {
       pageSizes: [10, 20, 50],
       pageSize: 10,
 
+      searchList: _.debounce(this._searchList, 500),
       refMap: this.toRefMap({
         categories,
         providers
@@ -153,6 +161,7 @@ export default {
             key: 'price',
             label: '价格'
           },
+          { input: 'image-upload', key: 'image', label: '图片' },
           { input: 'textarea', key: 'description', label: `${rtype}描述` }
         ]
       }
@@ -161,6 +170,10 @@ export default {
 
   created () {
     this.loadList()
+  },
+
+  watch: {
+    searchInput: 'searchList'
   },
 
   methods: {
@@ -179,12 +192,16 @@ export default {
       }, {})
     },
 
+    _searchList () {
+      this.loadList()
+    },
     loadList () {
       this.listLoading = true
-      let { pageSize, pageCurrent } = this
+      let { pageSize, pageCurrent, searchInput } = this
       let url = [
         '/products/list?sort=-1&limit=',
-        pageSize, '&page=', pageCurrent
+        pageSize, '&page=', pageCurrent,
+        '&search=', searchInput
       ].join('')
       fetchApi(url)
         .then(data => {
@@ -242,7 +259,7 @@ export default {
       })
       .then(() => {
         // this.$refs.cardItemEdit.reset()
-        // this.loadList()
+        this.loadList()
         // this.gotoItemList()
         // this.itemInEdit = false
         this.$notify({
