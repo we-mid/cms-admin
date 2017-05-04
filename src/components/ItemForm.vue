@@ -35,8 +35,10 @@
           <el-upload class="image-upload"
               accept="image/*"
               action="https://jsonplaceholder.typicode.com/posts/"
-              :on-success="imageUploadSuccess"
-              :before-upload="imageBeforeUpload"
+              :file-list="toFileList(field)"
+              :on-remove="getMethodByField(field, 'imageRemove')"
+              :on-success="getMethodByField(field, 'imageUploadSuccess')"
+              :before-upload="getMethodByField(field, 'imageBeforeUpload')"
               list-type="picture-card">
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -105,28 +107,66 @@ export default {
   },
 
   methods: {
-    imageBeforeUpload (file) {
-      let isJPG = file.type === 'image/jpeg'
-      let isPNG = file.type === 'image/png'
-      let isLt500K = file.size / 1024 / 1024 <= 0.5
-      let ret = (isJPG || isPNG) && isLt500K
+    imageBeforeUpload (field, file) {
+      console.log('imageBeforeUpload', file)
+      let { limitKB, extensions } = field
+      limitKB = limitKB || 500
+      extensions = extensions || ['jpg', 'png']
+      let mimes = extensions.map(v => {
+        v = v.toLowerCase()
+        v = { jpg: 'jpeg' }[v] || v
+        return `image/${v}`
+      })
+      let isType = _.contains(mimes, file.type)
+      let isLimit = file.size / 1024 < limitKB
+      let ret = isType && isLimit
       if (!ret) {
         this.$notify({
           type: 'warning',
           title: '图片上传失败',
-          message: '图片格式需为JPG/PNG，且不大于500K'
+          message: `图片应为${extensions.join('/')}格式，且小于${limitKB}KB`
         })
       }
       return ret
     },
-    imageUploadSuccess (res, file) {
-      console.log('res, file', res, file)
+    imageUploadSuccess (field, res, file) {
+      console.log('imageUploadSuccess', res, file)
+      let arr = this.model[field.key]
+      arr = arr.concat(res.id)
+      arr = _.uniq(arr)
+      this.model[field.key] = arr
+    },
+    imageRemove (field, file) {
+      let arr = this.model[field.key]
+      arr = _.reject(arr, id => {
+        return file.url === this.fileIdToURL(id)
+      })
+      this.model[field.key] = arr
+    },
+    getMethodByField (field, method) {
+      return (...args) => {
+        return this[method](field, ...args)
+      }
+    },
+    fileIdToURL (id) {
+      return `http://localhost/my/file/${id}`
+    },
+    toFileList (field) {
+      return this.model[field.key].map(id => {
+        return {
+          url: this.fileIdToURL(id)
+        }
+      })
     },
 
     schemaToModel () {
       return this.schema.fields
         .reduce((acc, field) => {
-          acc[field.key] = ''
+          if (_.contains(['image-upload'], field.input)) {
+            acc[field.key] = []
+          } else {
+            acc[field.key] = ''
+          }
           return acc
         }, {})
     },
@@ -168,7 +208,7 @@ $w: 100px;
   display: inline-block;
   margin-right: 20px;
   margin-top: 20px;
-  width: 450px;
+  width: 460px;
 }
 
 .item-form {

@@ -36,6 +36,9 @@
                 <el-form-item label="价格">
                   <span>{{ s.row.price }} 元</span>
                 </el-form-item>
+                <el-form-item label="图片">
+                  <span><img v-if="s.row.image" :src="s.row.image"></span>
+                </el-form-item>
                 <el-form-item :label="rtype + '描述'">
                   <span>{{ s.row.description }}</span>
                 </el-form-item>
@@ -161,7 +164,11 @@ export default {
             key: 'price',
             label: '价格'
           },
-          { input: 'image-upload', key: 'image', label: '图片' },
+          {
+            input: 'image-upload',
+            key: 'image',
+            label: '图片'
+          },
           { input: 'textarea', key: 'description', label: `${rtype}描述` }
         ]
       }
