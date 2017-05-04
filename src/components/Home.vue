@@ -28,7 +28,6 @@
           </el-submenu>-->
           <el-menu-item index="products"><i class="el-icon-menu"></i>商品管理</el-menu-item>
           <el-menu-item index="orders"><i class="el-icon-document"></i>订单管理</el-menu-item>
-          <el-menu-item index="exchanges"><i class="el-icon-date"></i>交易管理</el-menu-item>
           <el-menu-item index="users"><i class="el-icon-star-off"></i>用户管理</el-menu-item>
         </el-menu>
       </div>
