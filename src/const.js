@@ -1,7 +1,7 @@
 export const categories = [
-  { type: 'period', uid: 'breakfast', name: '早餐' },
-  { type: 'period', uid: 'lunch', name: '午餐' },
-  { type: 'period', uid: 'supper', name: '晚餐' }
+  { type: 'period', uid: 'bf', name: '早餐' },
+  { type: 'period', uid: 'lc', name: '午餐' },
+  { type: 'period', uid: 'sp', name: '晚餐' }
 ]
 
 export const providers = [

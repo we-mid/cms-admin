@@ -29,6 +29,7 @@
           <el-menu-item index="products"><i class="el-icon-menu"></i>商品管理</el-menu-item>
           <el-menu-item index="orders"><i class="el-icon-document"></i>订单管理</el-menu-item>
           <el-menu-item index="exchanges"><i class="el-icon-date"></i>交易管理</el-menu-item>
+          <el-menu-item index="users"><i class="el-icon-star-off"></i>用户管理</el-menu-item>
         </el-menu>
       </div>
 
@@ -114,18 +115,4 @@ export default {
 .pull-right {
   float: right !important;
 }
-</style>
-
-<style lang="less">
-  [class^="el-icon-fa"], [class*=" el-icon-fa"] {
-    font-family:"FontAwesome" !important;
-    display: inline-block;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  @import url("../../node_modules/font-awesome/less/font-awesome");
-  @fa-css-prefix: el-icon-fa;
-  @import url("../../node_modules/element-ui/lib/theme-default/index.css");
 </style>

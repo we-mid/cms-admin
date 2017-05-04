@@ -11,13 +11,11 @@
       </div>
 
       <div>
-        <el-table
-          :data="itemList"
-          style="width: 100%">
+        <el-table :data="itemList">
           <el-table-column type="expand">
             <template scope="props">
               <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item :label="rtype + 'UID'" style="width: 100%">
+                <el-form-item :label="rtype + 'UID'">
                   <span>{{ props.row.uid }}</span>
                 </el-form-item>
                 <el-form-item :label="rtype + '名称'">
@@ -32,7 +30,7 @@
                 <el-form-item label="价格">
                   <span>{{ props.row.price }} 元</span>
                 </el-form-item>
-                <el-form-item :label="rtype + '描述'" style="width: 100%">
+                <el-form-item :label="rtype + '描述'">
                   <span>{{ props.row.description }}</span>
                 </el-form-item>
                 <el-form-item label="创建日期">
@@ -48,10 +46,8 @@
             </template>
           </el-table-column>
           <el-table-column
-              :label="rtype + 'UID'">
-            <template scope="s">
-              {{ s.row.uid.substr(0, 9) }}
-            </template>
+            :label="rtype + 'UID'"
+            prop="uid">
           </el-table-column>
           <el-table-column
             :label="rtype + '名称'"
@@ -100,8 +96,7 @@
       ref="cardItemCreate"
       action="create" :name="rtype"
       :schema="formSchema"
-      @cancel="itemEditCancel"
-      @submit="itemEditSubmit">
+      @submit="itemCreateSubmit">
     </item-form>
   </div>
 </template>
@@ -111,11 +106,6 @@ import { categories, providers } from '../const'
 import { fetchApi } from '../api'
 import ItemForm from './ItemForm'
 import _ from 'lodash'
-
-let refDocs = {
-  categories,
-  providers
-}
 
 let rtype = '商品'
 
@@ -132,7 +122,10 @@ export default {
       pageSizes: [10, 20, 50],
       pageSize: 10,
 
-      refMap: this.toRefMap(refDocs),
+      refMap: this.toRefMap({
+        categories,
+        providers
+      }),
       itemInEdit: false,
 
       // todo: request /produts, /categories, /providers seperately
@@ -143,21 +136,17 @@ export default {
             input: 'radio-group',
             key: 'provider',
             label: '供应商',
-            options: [
-              { value: 'jyj', label: '吉野家' },
-              { value: 'ksf', label: '可颂坊' },
-              { value: 'mdw', label: '面点王' }
-            ]
+            options: providers.map(({ uid, name }) => {
+              return { value: uid, label: name }
+            })
           },
           {
             input: 'radio-group',
             key: 'category',
             label: '时段',
-            options: [
-              { value: 'breakfast', label: '早餐' },
-              { value: 'lunch', label: '午餐' },
-              { value: 'supper', label: '晚餐' }
-            ]
+            options: categories.map(({ uid, name }) => {
+              return { value: uid, label: name }
+            })
           },
           {
             input: 'number',
