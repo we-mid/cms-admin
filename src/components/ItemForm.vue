@@ -203,7 +203,7 @@ $w: 100px;
 }
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
 .box-card {
   display: inline-block;
   margin-right: 20px;
@@ -218,12 +218,6 @@ $w: 100px;
 </style>
 
 <style lang="scss">
-.card-title {
-  i {
-    margin-right: 0.3em;
-  }
-}
-
 .item-form .el-form-item__content {
   margin-left: 90px !important;
 }

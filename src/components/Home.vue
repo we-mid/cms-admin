@@ -1,7 +1,11 @@
 <template>
   <div class="page-login">
     <div class="page-topbar">
-      <h1>点餐管理后台</h1>
+      <div class="title">
+        <router-link to="/" tag="div">
+          <h1>点餐管理后台</h1>
+        </router-link>
+      </div>
       <ul>
         <li @click="logout()">退出登录</li>
       </ul>
@@ -40,6 +44,8 @@
 </template>
 
 <script>
+import { fetchApi } from '../api'
+
 export default {
   data () {
     let activeTab = this.$route.path.substr(1) // remove leading `/`
@@ -50,7 +56,15 @@ export default {
 
   methods: {
     logout () {
-      // todo
+      fetchApi('/logout', { method: 'POST' })
+        .then(() => {
+          this.$router.push('/login')
+          this.$notify({
+            type: 'success',
+            title: '退出登录',
+            message: '你已成功退出登录'
+          })
+        })
     },
 
     handleSideNavSelect (key, keyPath) {
@@ -83,6 +97,7 @@ export default {
 .page-main {
   flex: 1;
   padding: 20px;
+  background-color: #ffffff;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -95,11 +110,6 @@ export default {
   height: 60px;
   display: flex;
   align-items: center;
-  h1 {
-    font-size: 20px;
-    font-weight: normal;
-    margin-left: 20px;
-  }
   ul {
     flex: 1;
   }
@@ -113,5 +123,15 @@ export default {
 }
 .pull-right {
   float: right !important;
+}
+.title {
+  margin-left: 14px;
+  h1 {
+    margin: 0;
+    padding: 6px;
+    font-size: 20px;
+    font-weight: normal;
+    cursor: pointer;
+  }
 }
 </style>

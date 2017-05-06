@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
 import Login from '@/components/Login'
 import Home from '@/components/Home'
 import Products from '@/components/Products'
 import Orders from '@/components/Orders'
 import Users from '@/components/Users'
+import Welcome from '@/components/Welcome'
 
 Vue.use(Router)
 
@@ -13,10 +13,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/products',
       name: 'Home',
       component: Home,
       children: [
+        {
+          path: '',
+          component: Welcome
+        },
         {
           path: 'users',
           component: Users
@@ -35,11 +38,6 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
-    },
-    {
-      path: '/hello',
-      name: 'Hello',
-      component: Hello
     }
   ]
 })
