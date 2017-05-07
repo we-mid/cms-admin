@@ -47,10 +47,9 @@
 import { fetchApi } from '../api'
 
 export default {
-  data () {
-    let activeTab = this.$route.path.substr(1) // remove leading `/`
-    return {
-      activeTab
+  computed: {
+    activeTab () {
+      return this.$route.path.substr(1) // remove leading `/`
     }
   },
 

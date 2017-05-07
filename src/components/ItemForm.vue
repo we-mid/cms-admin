@@ -34,8 +34,10 @@
         <template v-else-if="field.input === 'image-upload'">
           <el-upload class="image-upload"
               accept="image/*"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :file-list="toFileList(field)"
+              :data="{ a: 1, b: 2 }"
+              :action="uploadUrl"
+              :file-list="model[field]"
+              :on-preview="imagePreview"
               :on-remove="getMethodByField(field, 'imageRemove')"
               :on-success="getMethodByField(field, 'imageUploadSuccess')"
               :before-upload="getMethodByField(field, 'imageBeforeUpload')"
@@ -52,10 +54,15 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <el-dialog v-model="showPreview" size="small">
+      <img width="100%" :src="previewUrl">
+    </el-dialog>
   </el-card>
 </template>
 
 <script>
+import { uploadUrl } from '../../config'
 import _ from 'lodash'
 
 export default {
@@ -72,6 +79,9 @@ export default {
 
   data () {
     return {
+      showPreview: false,
+      previewUrl: '',
+      uploadUrl,
       model: this.schemaToModel()
     }
   },
@@ -107,6 +117,10 @@ export default {
   },
 
   methods: {
+    imagePreview (file) {
+      this.previewUrl = file.url
+      this.showPreview = true
+    },
     imageBeforeUpload (field, file) {
       console.log('imageBeforeUpload', file)
       let { limitKB, extensions } = field
@@ -117,7 +131,7 @@ export default {
         v = { jpg: 'jpeg' }[v] || v
         return `image/${v}`
       })
-      let isType = _.contains(mimes, file.type)
+      let isType = _.includes(mimes, file.type)
       let isLimit = file.size / 1024 < limitKB
       let ret = isType && isLimit
       if (!ret) {
@@ -132,14 +146,14 @@ export default {
     imageUploadSuccess (field, res, file) {
       console.log('imageUploadSuccess', res, file)
       let arr = this.model[field.key]
-      arr = arr.concat(res.id)
-      arr = _.uniq(arr)
+      arr = arr.concat({ url: this.fileIdToURL(res.id) })
+      arr = _.uniqBy(arr, 'url')
       this.model[field.key] = arr
     },
     imageRemove (field, file) {
       let arr = this.model[field.key]
-      arr = _.reject(arr, id => {
-        return file.url === this.fileIdToURL(id)
+      arr = _.reject(arr, item => {
+        return item.url === file.url
       })
       this.model[field.key] = arr
     },
@@ -149,20 +163,13 @@ export default {
       }
     },
     fileIdToURL (id) {
-      return `http://localhost/my/file/${id}`
-    },
-    toFileList (field) {
-      return this.model[field.key].map(id => {
-        return {
-          url: this.fileIdToURL(id)
-        }
-      })
+      return `http://localhost:3001/upload/${id}`
     },
 
     schemaToModel () {
       return this.schema.fields
         .reduce((acc, field) => {
-          if (_.contains(['image-upload'], field.input)) {
+          if (_.includes(['image-upload'], field.input)) {
             acc[field.key] = []
           } else {
             acc[field.key] = ''
@@ -208,7 +215,7 @@ $w: 100px;
   display: inline-block;
   margin-right: 20px;
   margin-top: 20px;
-  width: 460px;
+  width: 470px;
 }
 
 .item-form {
