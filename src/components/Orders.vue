@@ -23,9 +23,9 @@
                 </el-form-item>
                 <el-form-item label="商品 * 数量">
                   <span>
-                    {{ getRefValue(s.row, 'product', 'products', 'name') }}
+                    {{ getRefValue(s.row, 'product.uid', 'products', 'name') }}
                     *
-                    {{ s.row.amount }}
+                    {{ s.row.product.amount }}
                   </span>
                 </el-form-item>
                 <el-form-item label="订单总额">
@@ -53,9 +53,9 @@
           <el-table-column
             label="商品 * 数量">
             <template scope="s">
-              {{ getRefValue(s.row, 'product', 'products', 'name') }}
+              {{ getRefValue(s.row, 'product.uid', 'products', 'name') }}
               *
-              {{ s.row.amount }}
+              {{ s.row.product.amount }}
             </template>
           </el-table-column>
           <el-table-column
@@ -85,6 +85,7 @@
 
 <script>
 import { fetchApi } from '../api'
+import access from 'object-access'
 import _ from 'lodash'
 
 let rtype = '订单'
@@ -108,8 +109,9 @@ export default {
   },
 
   methods: {
+    // object-access: fromKey should not include `.`
     getRefValue (srcObj, fromKey, tarRes, toKey) {
-      let uid = srcObj[fromKey]
+      let uid = access(srcObj, fromKey)
       let refObj = this.refMap[tarRes][uid]
       return refObj ? refObj[toKey] : null
     },
