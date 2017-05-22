@@ -53,16 +53,32 @@ export default {
     }
   },
 
+  created () {
+    this.checkLogin()
+  },
+
   methods: {
+    checkLogin () {
+      // 如果用户未登录 则跳转回登录页
+      fetchApi('/session')
+        .then(({ username }) => {
+          if (username) {
+            // todo: vuex sync user
+          } else {
+            this.$notify({
+              title: '请重新登录',
+              message: '用户未登录，或者登录已失效',
+              type: 'error'
+            })
+            this.$router.push({ name: 'Login' })
+          }
+        })
+    },
+
     logout () {
       fetchApi('/logout', { method: 'POST' })
         .then(() => {
           this.$router.push('/login')
-          this.$notify({
-            type: 'success',
-            title: '退出登录',
-            message: '你已成功退出登录'
-          })
         })
     },
 

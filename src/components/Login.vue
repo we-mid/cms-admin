@@ -5,15 +5,16 @@
         <i class="el-icon-d-arrow-right"></i>
         <span>用户登录</span>
       </div>
-      <el-form :model="model" label-width="80px" class="login-form">
+      <el-form :model="model" label-width="80px" class="login-form"
+          @keydown.enter.native.prevent="login()">
         <el-form-item label="用户名">
           <el-input v-model="model.username"></el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input type="password" v-model="model.password"></el-input>
+          <el-input type="password" v-model="model.password" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">登录</el-button>
+          <el-button ref="btnLogin" type="primary" @click="login()">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -21,13 +22,53 @@
 </template>
 
 <script>
+import { fetchApi } from '@/api'
+
 export default {
   data () {
     return {
       model: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: 'admin'
       }
+    }
+  },
+
+  created () {
+    this.checkLogin()
+  },
+
+  mounted () {
+    // 页面加载时 自动focus登录按钮 用户可直接enter登录
+    this.$refs.btnLogin.$el.focus()
+  },
+
+  methods: {
+    checkLogin () {
+      // 如果用户已登录 则跳转进入管理面板
+      fetchApi('/session')
+        .then(({ username }) => {
+          if (username) {
+            this.$router.push({ name: 'Home' })
+          }
+        })
+    },
+
+    login () {
+      fetchApi('/login', {
+        method: 'POST',
+        body: JSON.stringify(this.model)
+      })
+      .then(() => {
+        this.$router.push({ name: 'Home' })
+      })
+      .catch(err => {
+        this.$notify({
+          title: '登录失败',
+          message: `${err}`,
+          type: 'error'
+        })
+      })
     }
   }
 }

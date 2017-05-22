@@ -2,8 +2,14 @@ import fetch from 'isomorphic-fetch'
 import { apiUrl } from '../../config'
 
 // todo: qs params
-export function fetchApi (url, options) {
+export function fetchApi (url, options = {}) {
   url = `${apiUrl}${url}`
+  options = {
+    ...options,
+    // 解决fetch 跨域+携带cookie
+    // https://github.com/github/fetch#sending-cookies
+    credentials: 'include'
+  }
   return fetch(url, options)
     .then(res => res.json())
     .catch(err => {
