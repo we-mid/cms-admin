@@ -1,11 +1,15 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
 
-var apiUrl = 'http://localhost:3001/api'
+var serverUrl = 'http://localhost:3001'
+var apiUrl = serverUrl + '/api'
+var uploadUrl = apiUrl + '/ap/upload'
+var uploadDir = serverUrl + '/upload'
 
 module.exports = {
   apiUrl,
-  uploadUrl: `${apiUrl}/upload`,
+  uploadUrl,
+  uploadDir,
 
   build: {
     env: require('./prod.env'),

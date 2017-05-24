@@ -18,8 +18,11 @@
                 <el-form-item :label="rtype + 'UID'">
                   <span>{{ props.row.uid }}</span>
                 </el-form-item>
+                <el-form-item :label="rtype + '角色'">
+                  <span>{{ props.row.rolesText }}</span>
+                </el-form-item>
                 <el-form-item :label="rtype + 'AD'">
-                  <span>{{ props.row.ad }}</span>
+                  <span>{{ props.row.ad || '-' }}</span>
                 </el-form-item>
                 <el-form-item :label="rtype + '昵称'">
                   <span>{{ props.row.name }}</span>
@@ -35,8 +38,8 @@
             prop="uid">
           </el-table-column>
           <el-table-column
-            :label="rtype + 'AD'"
-            prop="ad">
+            :label="rtype + 'AD'">
+            <template scope="s">{{ s.row.ad || '-' }}</template>
           </el-table-column>
           <el-table-column
             :label="rtype + '昵称'"
@@ -66,6 +69,12 @@ import { fetchApi } from '../api'
 
 let rtype = '用户'
 
+let roleTextMap = {
+  '8': '供应商',
+  '5': '行政管理员',
+  '1': '点餐用户'
+}
+
 export default {
   data () {
     return {
@@ -88,16 +97,26 @@ export default {
       this.listLoading = true
       let { pageSize, pageCurrent } = this
       let url = [
-        '/users/list?sort=-1&limit=',
+        '/a/users/list?sort=-1&limit=',
         pageSize, '&page=', pageCurrent
       ].join('')
       fetchApi(url)
         .then(data => {
           let { total, docs } = data
+          docs = docs.map(this.wrapItem)
           this.itemList = docs
           this.listTotal = total
           this.listLoading = false
         })
+    },
+    wrapItem (doc) {
+      let { roles } = doc
+      roles = roles.sort().reverse() // 逆序
+      return {
+        ...doc,
+        rolesText: roles.map(v => roleTextMap[v])
+          .join(', ') || '-'
+      }
     },
 
     handlePageSize (v) {

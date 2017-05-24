@@ -60,9 +60,9 @@ export default {
   methods: {
     checkLogin () {
       // 如果用户未登录 则跳转回登录页
-      fetchApi('/session')
-        .then(({ username }) => {
-          if (username) {
+      fetchApi('/ap/session')
+        .then(({ user }) => {
+          if (user) {
             // todo: vuex sync user
           } else {
             this.$notify({
@@ -76,7 +76,7 @@ export default {
     },
 
     logout () {
-      fetchApi('/logout', { method: 'POST' })
+      fetchApi('/ap/logout', { method: 'POST' })
         .then(() => {
           this.$router.push('/login')
         })

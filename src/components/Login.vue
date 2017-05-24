@@ -8,7 +8,7 @@
       <el-form :model="model" label-width="80px" class="login-form"
           @keydown.enter.native.prevent="login()">
         <el-form-item label="用户名">
-          <el-input v-model="model.username"></el-input>
+          <el-input v-model="model.account"></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input type="password" v-model="model.password" auto-complete="off"></el-input>
@@ -28,7 +28,7 @@ export default {
   data () {
     return {
       model: {
-        username: 'admin',
+        account: 'admin',
         password: 'admin'
       }
     }
@@ -46,16 +46,16 @@ export default {
   methods: {
     checkLogin () {
       // 如果用户已登录 则跳转进入管理面板
-      fetchApi('/session')
-        .then(({ username }) => {
-          if (username) {
+      fetchApi('/ap/session')
+        .then(({ user }) => {
+          if (user) {
             this.$router.push({ name: 'Home' })
           }
         })
     },
 
     login () {
-      fetchApi('/login', {
+      fetchApi('/ap/login', {
         method: 'POST',
         body: JSON.stringify(this.model)
       })

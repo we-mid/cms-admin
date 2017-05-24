@@ -5,6 +5,8 @@
       <span>{{ title }}</span>
     </div>
     <el-form :model="model" label-width="80px" class="item-form">
+
+      <!-- todo: vue :component="xx" -->
       <el-form-item v-for="field in schema.fields"
           :key="field.key"
           :label="field.label">
@@ -62,7 +64,7 @@
 </template>
 
 <script>
-import { uploadUrl } from '../../config'
+import { uploadDir, uploadUrl } from '../../config'
 import _ from 'lodash'
 
 export default {
@@ -163,7 +165,7 @@ export default {
       }
     },
     fileIdToURL (id) {
-      return `http://localhost:3001/upload/${id}`
+      return `${uploadDir}/${id}`
     },
 
     schemaToModel () {

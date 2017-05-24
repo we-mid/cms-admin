@@ -159,16 +159,8 @@ export default {
               return { value: uid, label: name }
             })
           },
-          {
-            input: 'number',
-            key: 'price',
-            label: '价格'
-          },
-          {
-            input: 'image-upload',
-            key: 'image',
-            label: '图片'
-          },
+          { input: 'number', key: 'price', abel: '价格' },
+          { input: 'image-upload', key: 'image', label: '图片' },
           { input: 'textarea', key: 'description', label: `${rtype}描述` }
         ]
       }
@@ -206,7 +198,7 @@ export default {
       this.listLoading = true
       let { pageSize, pageCurrent, searchInput } = this
       let url = [
-        '/products/list?sort=-1&limit=',
+        '/a/products/list?sort=-1&limit=',
         pageSize, '&page=', pageCurrent,
         '&search=', searchInput
       ].join('')
@@ -226,7 +218,7 @@ export default {
         type: 'warning'
       })
       .then(() => {
-        return fetchApi('/products/delete', {
+        return fetchApi('/a/products/delete', {
           method: 'POST',
           body: JSON.stringify({ uid })
         })
@@ -260,7 +252,7 @@ export default {
       })
     },
     itemEditSubmit (model) {
-      fetchApi('/products/update', {
+      fetchApi('/a/products/update', {
         method: 'POST',
         body: JSON.stringify(model)
       })
@@ -277,7 +269,7 @@ export default {
       })
     },
     itemCreateSubmit (model) {
-      fetchApi('/products/create', {
+      fetchApi('/a/products/create', {
         method: 'POST',
         body: JSON.stringify(model)
       })

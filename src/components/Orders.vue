@@ -23,9 +23,9 @@
                 </el-form-item>
                 <el-form-item label="商品 * 数量">
                   <span>
-                    {{ getRefValue(s.row, 'product.uid', 'products', 'name') }}
+                    {{ getRefValue(s.row, 'product', 'products', 'name') }}
                     *
-                    {{ s.row.product.amount }}
+                    {{ s.row.amount }}
                   </span>
                 </el-form-item>
                 <el-form-item label="订单总额">
@@ -53,9 +53,9 @@
           <el-table-column
             label="商品 * 数量">
             <template scope="s">
-              {{ getRefValue(s.row, 'product.uid', 'products', 'name') }}
+              {{ getRefValue(s.row, 'product', 'products', 'name') }}
               *
-              {{ s.row.product.amount }}
+              {{ s.row.amount }}
             </template>
           </el-table-column>
           <el-table-column
@@ -129,7 +129,7 @@ export default {
       this.listLoading = true
       let { pageSize, pageCurrent } = this
       let url = [
-        '/orders/list?sort=-1&limit=',
+        '/a/orders/list?sort=-1&limit=',
         pageSize, '&page=', pageCurrent
       ].join('')
       fetchApi(url)
