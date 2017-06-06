@@ -65,11 +65,6 @@ export default {
           if (user) {
             // todo: vuex sync user
           } else {
-            this.$notify({
-              title: '请重新登录',
-              message: '用户未登录，或者登录已失效',
-              type: 'error'
-            })
             this.$router.push({ name: 'Login' })
           }
         })

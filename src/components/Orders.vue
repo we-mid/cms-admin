@@ -19,11 +19,11 @@
                   <span>{{ s.row.uid }}</span>
                 </el-form-item>
                 <el-form-item label="用户AD">
-                  <span>{{ getRefValue(s.row, 'user', 'users', 'ad') }}</span>
+                  <span>{{ getRefValue(s.row, 'user', 'User', 'ad') }}</span>
                 </el-form-item>
                 <el-form-item label="商品 * 数量">
                   <span>
-                    {{ getRefValue(s.row, 'product', 'products', 'name') }}
+                    {{ getRefValue(s.row, 'product', 'Product', 'name') }}
                     *
                     {{ s.row.amount }}
                   </span>
@@ -47,13 +47,13 @@
           <el-table-column
             label="用户AD">
             <template scope="s">
-              {{ getRefValue(s.row, 'user', 'users', 'ad') }}
+              {{ getRefValue(s.row, 'user', 'User', 'ad') }}
             </template>
           </el-table-column>
           <el-table-column
             label="商品 * 数量">
             <template scope="s">
-              {{ getRefValue(s.row, 'product', 'products', 'name') }}
+              {{ getRefValue(s.row, 'product', 'Product', 'name') }}
               *
               {{ s.row.amount }}
             </template>
@@ -129,7 +129,7 @@ export default {
       this.listLoading = true
       let { pageSize, pageCurrent } = this
       let url = [
-        '/a/orders/list?sort=-1&limit=',
+        '/a/orders/list?limit=',
         pageSize, '&page=', pageCurrent
       ].join('')
       fetchApi(url)

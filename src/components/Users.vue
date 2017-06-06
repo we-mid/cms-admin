@@ -97,7 +97,7 @@ export default {
       this.listLoading = true
       let { pageSize, pageCurrent } = this
       let url = [
-        '/a/users/list?sort=-1&limit=',
+        '/a/users/list?limit=',
         pageSize, '&page=', pageCurrent
       ].join('')
       fetchApi(url)

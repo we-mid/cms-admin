@@ -159,7 +159,7 @@ export default {
               return { value: uid, label: name }
             })
           },
-          { input: 'number', key: 'price', abel: '价格' },
+          { input: 'number', key: 'price', label: '价格' },
           { input: 'image-upload', key: 'image', label: '图片' },
           { input: 'textarea', key: 'description', label: `${rtype}描述` }
         ]
@@ -198,7 +198,7 @@ export default {
       this.listLoading = true
       let { pageSize, pageCurrent, searchInput } = this
       let url = [
-        '/a/products/list?sort=-1&limit=',
+        '/a/products/list?limit=',
         pageSize, '&page=', pageCurrent,
         '&search=', searchInput
       ].join('')
