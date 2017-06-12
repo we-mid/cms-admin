@@ -93,33 +93,33 @@
       </div>
     </el-card>
 
-    <item-form v-show="itemInEdit"
+    <item-card v-show="itemInEdit"
       ref="cardItemEdit"
       action="edit" :name="rtype"
       :schema="formSchema"
       @cancel="itemEditCancel"
       @submit="itemEditSubmit">
-    </item-form>
+    </item-card>
 
-    <item-form
+    <item-card
       ref="cardItemCreate"
       action="create" :name="rtype"
       :schema="formSchema"
       @submit="itemCreateSubmit">
-    </item-form>
+    </item-card>
   </div>
 </template>
 
 <script>
 import { categories, providers } from '../const'
 import { fetchApi } from '../api'
-import ItemForm from './ItemForm'
+import ItemCard from './ItemCard'
 import _ from 'lodash'
 
 let rtype = '商品'
 
 export default {
-  components: { ItemForm },
+  components: { ItemCard },
 
   data () {
     return {
@@ -281,6 +281,13 @@ export default {
           type: 'success',
           title: '添加成功',
           message: `${rtype}信息已成功添加`
+        })
+      })
+      .catch(err => {
+        this.$notify({
+          type: 'error',
+          title: '添加失败',
+          message: `${err}`
         })
       })
     },

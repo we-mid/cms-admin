@@ -8,21 +8,23 @@ import Users from '@/components/Users'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'Home',
-      redirect: { name: 'Products' },
+      redirect: { name: 'Orders' },
       component: Home,
       children: [
         {
           path: 'users',
+          name: 'Users',
           component: Users
         },
         {
           path: 'orders',
+          name: 'Orders',
           component: Orders
         },
         {
@@ -39,3 +41,5 @@ export default new Router({
     }
   ]
 })
+
+export default router

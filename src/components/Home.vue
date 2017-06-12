@@ -15,21 +15,6 @@
       <div class="page-sidebar">
         <el-menu :default-active="activeTab" class="el-menu-vertical-demo"
             @select="handleSideNavSelect">
-          <!--<el-submenu index="1">
-            <template slot="title"><i class="el-icon-message"></i>导航一</template>
-            <el-menu-item-group>
-              <template slot="title">分组一</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="/products">商品管理</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template slot="title">选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
-          </el-submenu>-->
           <el-menu-item index="products"><i class="el-icon-menu"></i>商品管理</el-menu-item>
           <el-menu-item index="orders"><i class="el-icon-document"></i>订单管理</el-menu-item>
           <el-menu-item index="users"><i class="el-icon-star-off"></i>用户管理</el-menu-item>

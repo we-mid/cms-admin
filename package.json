@@ -1,7 +1,7 @@
 {
-  "name": "we-admin-ui",
+  "name": "cms-admin",
   "version": "0.0.1",
-  "description": "UI part for we-admin framework.",
+  "description": "Admin UI for CMS framework.",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

@@ -1,11 +1,6 @@
 <template>
-  <el-card class="box-card">
-    <div class="card-title" slot="header">
-      <i :class="'el-icon-' + icon"></i>
-      <span>{{ title }}</span>
-    </div>
+  <div>
     <el-form :model="model" label-width="80px" class="item-form">
-
       <!-- todo: vue :component="xx" -->
       <el-form-item v-for="field in schema.fields"
           :key="field.key"
@@ -60,17 +55,16 @@
     <el-dialog v-model="showPreview" size="small">
       <img width="100%" :src="previewUrl">
     </el-dialog>
-  </el-card>
+  </div>
 </template>
 
 <script>
-import { uploadDir, uploadUrl } from '../../config'
+import { uploadDir, uploadUrl } from '@/../config'
 import _ from 'lodash'
 
 export default {
   props: {
-    action: String,
-    name: String,
+    buttons: Array,
     schema: {
       // `schema` is required in `data` method
       // so it has to be specified before rendering an `ItemForm`
@@ -85,36 +79,6 @@ export default {
       previewUrl: '',
       uploadUrl,
       model: this.schemaToModel()
-    }
-  },
-
-  computed: {
-    icon () {
-      return {
-        create: 'plus',
-        edit: 'edit'
-      }[this.action]
-    },
-    title () {
-      return {
-        create: `添加${this.name}`,
-        edit: `修改${this.name} ${this.uidStr}`
-      }[this.action]
-    },
-    uidStr () {
-      let { uid } = this.model
-      return uid ? uid.substr(0, 9) : ''
-    },
-    buttons () {
-      return {
-        create: [
-          { type: 'primary', text: '立即添加', handle: this.formSubmit }
-        ],
-        edit: [
-          { type: 'primary', text: '立即修改', handle: this.formSubmit },
-          { type: '', text: '关闭', handle: this.formCancel }
-        ]
-      }[this.action]
     }
   },
 
@@ -179,23 +143,26 @@ export default {
           return acc
         }, {})
     },
+    getModel () {
+      return this.model
+    },
     reset (model) {
       if (model) {
         this.model = _.clone(model)
       } else {
         this.model = this.schemaToModel()
       }
-    },
-
-    formCancel () {
-      this.$emit('cancel')
-    },
-    formSubmit () {
-      this.$emit('submit', this.model)
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.item-form {
+  margin-bottom: -22px;
+  padding-right: 10px;
+}
+</style>
 
 <style lang="scss">
 $w: 100px;
@@ -210,23 +177,7 @@ $w: 100px;
     height: $w !important;
   }
 }
-</style>
 
-<style lang="scss" scoped>
-.box-card {
-  display: inline-block;
-  margin-right: 20px;
-  margin-top: 20px;
-  width: 470px;
-}
-
-.item-form {
-  margin-bottom: -22px;
-  padding-right: 10px;
-}
-</style>
-
-<style lang="scss">
 .item-form .el-form-item__content {
   margin-left: 90px !important;
 }
