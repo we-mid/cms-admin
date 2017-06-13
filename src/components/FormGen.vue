@@ -45,8 +45,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button v-for="button in buttons" :key="button.text"
-            :type="button.type" @click="button.handle">
+        <el-button v-for="button in schema.buttons" :key="button.text"
+            :type="button.type" @click="$emit(button.emit)">
           {{button.text}}
         </el-button>
       </el-form-item>
@@ -64,10 +64,9 @@ import _ from 'lodash'
 
 export default {
   props: {
-    buttons: Array,
     schema: {
       // `schema` is required in `data` method
-      // so it has to be specified before rendering an `ItemForm`
+      // so it has to be specified before rendering an `FormGen`
       required: true,
       type: Object
     }

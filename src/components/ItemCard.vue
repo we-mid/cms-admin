@@ -5,24 +5,25 @@
       <span>{{ title }}</span>
     </div>
 
-    <item-form ref="itemForm"
-        :schema="schema"
-        :buttons="buttons"></item-form>
+    <form-gen ref="itemForm"
+        :schema="formSchema"
+        @submit="formSubmit"
+        @cancel="formCancel"></form-gen>
   </el-card>
 </template>
 
 <script>
-import ItemForm from '@/components/ItemForm.vue'
+import FormGen from '@/components/FormGen.vue'
 
 export default {
-  components: { ItemForm },
+  components: { FormGen },
 
   props: {
     action: String,
     name: String,
     schema: {
       // `schema` is required in `data` method
-      // so it has to be specified before rendering an `ItemForm`
+      // so it has to be specified before rendering an `FormGen`
       required: true,
       type: Object
     }
@@ -51,13 +52,19 @@ export default {
     buttons () {
       return {
         create: [
-          { type: 'primary', text: '立即添加', handle: this.formSubmit }
+          { type: 'primary', text: '立即添加', emit: 'submit' }
         ],
         edit: [
-          { type: 'primary', text: '立即修改', handle: this.formSubmit },
-          { type: '', text: '关闭', handle: this.formCancel }
+          { type: 'primary', text: '立即修改', emit: 'submit' },
+          { type: '', text: '关闭', emit: 'cancel' }
         ]
       }[this.action]
+    },
+    formSchema () {
+      return {
+        ...this.schema,
+        buttons: this.buttons
+      }
     }
   },
 
