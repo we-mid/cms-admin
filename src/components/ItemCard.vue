@@ -92,3 +92,14 @@ export default {
   width: 470px;
 }
 </style>
+
+<style lang="scss">
+.box-card .el-form-item__content {
+  margin-left: 90px !important;
+}
+
+.box-card .form-gen {
+  margin-bottom: -22px;
+  padding-right: 10px;
+}
+</style>

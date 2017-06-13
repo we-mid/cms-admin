@@ -7,6 +7,15 @@
   margin-bottom: 16px;
 }
 
+.search-form {
+  margin-bottom: -6px;
+  .el-button {
+    display: block;
+    margin-top: 3px;
+    margin-left: -3px;
+  }
+}
+
 .demo-table-expand {
   /* display: inline-block extra margin [duplicate]
   http://stackoverflow.com/questions/1833734/display-inline-block-extra-margin */

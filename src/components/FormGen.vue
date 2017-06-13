@@ -1,26 +1,51 @@
 <template>
   <div>
-    <el-form :model="model" label-width="80px" class="item-form">
+    <el-form :inline="schema.inline" :model="model" label-width="80px" class="form-gen">
       <!-- todo: vue :component="xx" -->
-      <el-form-item v-for="field in schema.fields"
-          :key="field.key"
-          :label="field.label">
-        <template v-if="field.input === 'text'">
-          <el-input v-model="model[field.key]"></el-input>
+      <el-form-item v-for="f in schema.fields"
+          :key="f.key"
+          :label="f.label">
+        <template v-if="f.input === 'text'">
+          <el-input v-model="model[f.key]"
+            :placeholder="f.placeholder"
+            :class="f.cls"
+            :size="schema.size"></el-input>
         </template>
 
-        <template v-else-if="field.input === 'number'">
-          <el-input type="number" v-model.number="model[field.key]"
-            style="width: 100px"></el-input>
+        <template v-else-if="f.input === 'number'">
+          <el-input type="number" v-model.number="model[f.key]"
+            style="width: 100px"
+            :placeholder="f.placeholder"
+            :class="f.cls"
+            :size="schema.size"></el-input>
         </template>
 
-        <template v-else-if="field.input === 'textarea'">
-          <el-input type="textarea" v-model="model[field.key]"></el-input>
+        <template v-else-if="f.input === 'textarea'">
+          <el-input type="textarea" v-model="model[f.key]"
+            :placeholder="f.placeholder"
+            :class="f.cls"
+            :size="schema.size"></el-input>
         </template>
 
-        <template v-else-if="field.input === 'radio-group'">
-          <el-radio-group v-model="model[field.key]">
-            <el-radio v-for="option in field.options"
+        <template v-else-if="f.input === 'select'">
+          <el-select v-model="model[f.key]"
+              :placeholder="f.placeholder"
+              :class="f.cls"
+              :size="schema.size">
+            <el-option
+              v-for="o in getOptionsByField(f)"
+              :key="o.value"
+              :label="o.label"
+              :value="o.value">
+            </el-option>
+          </el-select>
+        </template>
+
+        <template v-else-if="f.input === 'radio-group'">
+          <el-radio-group v-model="model[f.key]"
+              :class="f.cls"
+              :size="schema.size">
+            <el-radio v-for="option in f.options"
                 :key="option.value"
                 :label="option.value">
               {{option.label}}
@@ -28,16 +53,17 @@
           </el-radio-group>
         </template>
 
-        <template v-else-if="field.input === 'image-upload'">
+        <template v-else-if="f.input === 'image-upload'">
           <el-upload class="image-upload"
               accept="image/*"
-              :data="{ a: 1, b: 2 }"
               :action="uploadUrl"
-              :file-list="model[field]"
+              :file-list="model[f]"
               :on-preview="imagePreview"
-              :on-remove="getMethodByField(field, 'imageRemove')"
-              :on-success="getMethodByField(field, 'imageUploadSuccess')"
-              :before-upload="getMethodByField(field, 'imageBeforeUpload')"
+              :on-remove="getMethodByField(f, 'imageRemove')"
+              :on-success="getMethodByField(f, 'imageUploadSuccess')"
+              :before-upload="getMethodByField(f, 'imageBeforeUpload')"
+              :class="f.cls"
+              :size="schema.size"
               list-type="picture-card">
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -45,9 +71,11 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button v-for="button in schema.buttons" :key="button.text"
-            :type="button.type" @click="$emit(button.emit)">
-          {{button.text}}
+        <el-button v-for="b in schema.buttons" :key="b.text"
+            :type="b.type" @click="$emit(b.emit)"
+            :class="b.cls"
+            :size="schema.size">
+          {{b.text}}
         </el-button>
       </el-form-item>
     </el-form>
@@ -131,6 +159,14 @@ export default {
       return `${uploadDir}/${id}`
     },
 
+    getOptionsByField (field) {
+      let ret = [...field.options]
+      if (field.allowEmpty) {
+        ret.unshift({ value: '', label: '' })
+      }
+      return ret
+    },
+
     schemaToModel () {
       return this.schema.fields
         .reduce((acc, field) => {
@@ -157,10 +193,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.item-form {
-  margin-bottom: -22px;
-  padding-right: 10px;
-}
+
 </style>
 
 <style lang="scss">
@@ -175,10 +208,6 @@ $w: 100px;
     width: $w !important;
     height: $w !important;
   }
-}
-
-.item-form .el-form-item__content {
-  margin-left: 90px !important;
 }
 
 .el-checkbox, .el-radio {

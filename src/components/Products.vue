@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-products">
     <el-breadcrumb separator="/" class="breadcrumb">
       <el-breadcrumb-item>{{ rtype }}管理</el-breadcrumb-item>
     </el-breadcrumb>
@@ -16,6 +16,9 @@
           icon="search"
           v-model="searchInput">
         </el-input>-->
+        <form-gen class="search-form" ref="searchForm"
+          :schema="searchSchema"
+          @submit="handleSearch"></form-gen>
 
         <el-table :data="itemList">
           <el-table-column type="expand">
@@ -96,7 +99,7 @@
     <item-card v-show="itemInEdit"
       ref="cardItemEdit"
       action="edit" :name="rtype"
-      :schema="formSchema"
+      :schema="editSchema"
       @cancel="itemEditCancel"
       @submit="itemEditSubmit">
     </item-card>
@@ -104,43 +107,66 @@
     <item-card
       ref="cardItemCreate"
       action="create" :name="rtype"
-      :schema="formSchema"
+      :schema="editSchema"
       @submit="itemCreateSubmit">
     </item-card>
   </div>
 </template>
 
 <script>
-import { categories, providers } from '../const'
-import { fetchApi } from '../api'
-import ItemCard from './ItemCard'
+import { categories, providers } from '@/const'
+import { fetchApi } from '@/api'
+import ItemCard from '@/components/ItemCard'
+import FormGen from '@/components/FormGen'
 import _ from 'lodash'
+import qs from 'qs'
 
 let rtype = '商品'
 
 export default {
-  components: { ItemCard },
+  components: { ItemCard, FormGen },
 
   data () {
     return {
       rtype,
-      searchInput: '',
       listLoading: false,
       listTotal: 0,
       itemList: [],
       pageCurrent: 1,
       pageSizes: [10, 20, 50],
       pageSize: 10,
+      searchModel: {},
 
-      searchList: _.debounce(this._searchList, 500),
       refMap: this.toRefMap({
         categories,
         providers
       }),
       itemInEdit: false,
 
+      searchSchema: {
+        inline: true,
+        size: 'small',
+        fields: [
+          {
+            input: 'select',
+            key: 'category',
+            cls: 'category-select',
+            placeholder: '时段',
+            allowEmpty: true,
+            options: categories.map(({ uid, name }) => {
+              return { value: uid, label: name }
+            })
+          },
+          { input: 'number', key: 'price', placeholder: '价格' },
+          { input: 'text', key: 'keyword', placeholder: '关键词' }
+        ],
+        buttons: [
+          { type: 'primary', text: '查询', emit: 'submit' }
+        ]
+      },
+
       // todo: request /produts, /categories, /providers seperately
-      formSchema: {
+      editSchema: {
         fields: [
           { input: 'text', key: 'name', label: `${rtype}名称` },
           {
@@ -171,10 +197,6 @@ export default {
     this.loadList()
   },
 
-  watch: {
-    searchInput: 'searchList'
-  },
-
   methods: {
     getRefValue (srcObj, fromKey, tarRes, toKey) {
       let uid = srcObj[fromKey]
@@ -191,17 +213,22 @@ export default {
       }, {})
     },
 
-    _searchList () {
-      this.loadList()
-    },
     loadList () {
       this.listLoading = true
-      let { pageSize, pageCurrent, searchInput } = this
-      let url = [
-        '/a/products/list?limit=',
-        pageSize, '&page=', pageCurrent,
-        '&search=', searchInput
-      ].join('')
+      let { pageSize, pageCurrent, searchModel } = this
+      let searchObj = _.reduce(searchModel, (acc, v, k) => {
+        if (v != null && v !== '') {
+          acc[k] = v
+        }
+        return acc
+      }, {})
+      let url = '/a/products/list?' + qs.stringify({
+        limit: pageSize,
+        page: pageCurrent,
+        search: searchObj
+      }, {
+        encodeValuesOnly: true
+      })
       fetchApi(url)
         .then(data => {
           let { total, docs } = data
@@ -303,6 +330,10 @@ export default {
       this.$refs.cardItemEdit.$el.scrollIntoView()
     },
 
+    handleSearch () {
+      this.searchModel = this.$refs.searchForm.getModel()
+      this.loadList()
+    },
     handlePageSize (v) {
       this.pageSize = v
       this.loadList()
@@ -316,3 +347,17 @@ export default {
 </script>
 
 <style lang="scss" src="./ItemManage.scss"></style>
+
+<style lang="scss">
+.page-products {
+  .search-form {
+    .el-input {
+      width: 140px;
+    }
+    .category-select .el-input {
+      width: 100px;
+    }
+  }
+}
+</style>
+
