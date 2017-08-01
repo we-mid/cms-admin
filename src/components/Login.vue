@@ -13,6 +13,11 @@
         <el-form-item label="密码">
           <el-input type="password" v-model="model.password" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="验证码">
+          <el-input type="text" v-model="model.captcha" auto-complete="off">
+            <img slot="append" :src="captchaSrc" @click="reloadCaptcha">
+          </el-input>
+        </el-form-item>
         <el-form-item>
           <el-button ref="btnLogin" type="primary" @click="login()">登录</el-button>
         </el-form-item>
@@ -23,13 +28,16 @@
 
 <script>
 import { fetchApi } from '@/api'
+import { apiUrl } from '@/../config'
 
 export default {
   data () {
     return {
+      captchaKey: Date.now(),
       model: {
         account: 'admin',
-        password: 'admin'
+        password: 'admin',
+        captcha: ''
       }
     }
   },
@@ -43,7 +51,17 @@ export default {
     this.$refs.btnLogin.$el.focus()
   },
 
+  computed: {
+    captchaSrc () {
+      return `${apiUrl}/captcha?key=${this.captchaKey}`
+    }
+  },
+
   methods: {
+    reloadCaptcha () {
+      this.captchaKey = Date.now()
+      this.model.captcha = ''
+    },
     checkLogin () {
       // 如果用户已登录 则跳转进入管理面板
       fetchApi('/ap/session')
@@ -55,9 +73,12 @@ export default {
     },
 
     login () {
+      let { captchaKey } = this
       fetchApi('/ap/login', {
         method: 'POST',
-        body: JSON.stringify(this.model)
+        body: JSON.stringify({
+          ...this.model, captchaKey
+        })
       })
       .then(() => {
         this.$router.push({ name: 'Home' })
@@ -68,6 +89,7 @@ export default {
           message: `${err}`,
           type: 'error'
         })
+        this.reloadCaptcha()
       })
     }
   }
@@ -93,5 +115,11 @@ export default {
 .login-form {
   margin-bottom: -22px;
   padding-right: 10px;
+  img {
+    display: block;
+    cursor: pointer;
+    height: 36px;
+    margin: -2px -10px;
+  }
 }
 </style>
